@@ -1,0 +1,7 @@
+pywebio
+nfl_data_py
+pandas
+numpy
+bs4
+argparse
+plotly
