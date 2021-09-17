@@ -12,6 +12,13 @@ from bs4 import BeautifulSoup
 import argparse
 
 
+#TODO clean up the documentation
+def get_all_data():
+    return nfl.import_weekly_data(YEARS, downcast=True)
+
+def get_year_data(year):
+    return nfl.import_weekly_data([year], downcast=True)
+
 def compare_players(data, player_name1, player_name2):
     # ============================================================
     # compare_players
@@ -29,7 +36,7 @@ def compare_players(data, player_name1, player_name2):
 
 def get_player_data(data, player_name):
     # ============================================================
-    # get
+    # get_player_data
     # ============================================================
     # param: player_name: players name; type str (strict)
     #        data: whole current dataframe: type dataframe (strict)
@@ -38,10 +45,10 @@ def get_player_data(data, player_name):
     #Fetch Players data
     return data.loc[data['player_name'] == player_name]
 
-def printBarChart(data, category, title):
+def print_bar_chart(data, category, title):
     fig = px.bar(data, x='player_name', y=category, color='player_name', title = title)
     return fig
 
-def printLineChart(data, category, title):
+def print_line_chart(data, category, title):
     fig = px.line(data, x='week', y=category, color ='player_name', markers=True, title = title)
     return fig
