@@ -17,7 +17,7 @@ NFL-Data is completly hosted online so there is no need for any installation eff
 
 Documentation
 -------------
-This documentation is also available in `PDF and Epub formats <https://readthedocs.org/projects/pywebio/downloads/>`_.
+This documentation is also available in `PDF format <https://readthedocs.org/projects/nfl-data/downloads/>`_.
 
 .. toctree::
    :maxdepth: 2
