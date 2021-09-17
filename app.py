@@ -4,13 +4,36 @@ from pywebio.output import put_markdown
 from pywebio.platform.tornado_http import start_server
 import argparse
 
+from backend.struc import show_python_editor
+from backend.data import compare_players
+
 def app():
     set_env(title="NFL-data")
-    put_markdown("<h2>A Python implementation of popular NFL data tools</h2>")
-    put_markdown("More will be coming soon..... ")
-    put_markdown("[For more information or additional insight](mailto:colby.sawyer17@gmail.com)")
-    
+    put_markdown("""# A Python implementation of popular NFL data tools
+        More will be coming soon.....
+    """)
 
+#TODO First set of quickly available charts
+#       Positional Comparisons, Raw Stats Presentations, PPR stats, Charts to go along with those
+#       QB Heat Maps
+#       Team Tiers
+
+#TODO Implement Python code textarea (runnable)
+   #show_python_editor()
+   #TODO include inserts for code area (Pre-made charting funcitons)
+
+#TODO Include Documentation for ALL methods (https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html)
+
+#    Add Developement Notes (notably the proper nods)
+    put_markdown("""## Developer Notes
+        ### Recognition
+        Special thanks to [cooperdff](https://github.com/cooperdff) for the great python library, as well as [Ben Baldwin](https://twitter.com/benbbaldwin), 
+        [Sebastian Carl](https://twitter.com/mrcaseb), and [Lee Sharpe](https://twitter.com/LeeSharpeNFL) for making this data freely available and easy to access.
+        ### Contrib
+        Code is available Open-Source (GPLv3) [here](https://github.com/ColbySawyer7/nfl-data), please open issues for discussion prior to changes
+        ### Contact
+        For more information or any general inquiry feel free to [Reach out](http://colby-sawyer.com)
+    """, lstrip=True)
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", "--port", type=int, default=8080)
