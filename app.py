@@ -12,16 +12,6 @@ def app():
     put_markdown("""# A Python implementation of popular NFL data tools
         More will be coming soon.....
     """)
-
-#TODO First set of quickly available charts
-#       Positional Comparisons, Raw Stats Presentations, PPR stats, Charts to go along with those
-#       QB Heat Maps
-#       Team Tiers
-
-#TODO Implement Python code textarea (runnable)
-   #show_python_editor()
-   #TODO include inserts for code area (Pre-made charting funcitons)
-
 #TODO Include Documentation for ALL methods (https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html)
 
 #    Add Developement Notes (notably the proper nods)
