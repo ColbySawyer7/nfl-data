@@ -5,3 +5,8 @@ numpy
 bs4
 argparse
 plotly
+tabulate
+requests
+matplotlib
+scipy
+seaborn
