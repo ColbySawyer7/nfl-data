@@ -23,18 +23,13 @@ def show_main_menu():
     #       Positional Comparisons, Raw Stats Presentations, PPR stats, Charts to go along with those
     #       QB Heat Maps
     #       Team Tiers
-    data = get_year_data(2021)
     #options =  ['Single Player Stats','Player Comparison', 'Team Tier Chart']
+    data = get_year_data(2021)
     options =  ['Single Player Stats']
-    while True:
-        menu = actions('Common Tools', options)
-        if menu==options[0]:
-              show_single_player_stats(data)
-        elif menu == options[1]:
-            show_player_comparison_menu(data)
-        elif menu == options[2]:
-            show_team_tier_chart()
-        
+    put_input('menu',input_group(inputs=[actions('Common_Tools', options)]))
+    if pin.menu == options[0]:
+        show_single_player_stats(data)
+
 def show_team_tier_chart():
     data = get_pbp_data([2021])
     epa_df = pd.DataFrame({
@@ -113,7 +108,7 @@ def show_single_player_stats(data):
     popup(title,[
             put_markdown(get_player_data(data,player_name, week, removeZeros=True).transpose().to_markdown())
         ], size='large')
-    return 
+    return
 
 def show_ppr_by_week(data):
     players = data['player_name'].tolist()
@@ -134,20 +129,23 @@ def show_player_charts_menu(data):
 
 def show_python_editor():
     # Python Editor Default
-    put_markdown("""# Python Playground
-    ## Write your own implementation of our functions
-    """, lstrip=True)
-    options_code = [{"label":'Run Code',"value":'submit',"type":'submit'},
-                    {"label":'Reset',"value":'cancel',"type":'cancel'},
-                    {"label":'Run Code',"value":'submit',"type":'submit'}]
-    options_help =['Import basic line graph', 'Import basic bar chart', 'Import basic year data']
-    inputs = input_group("Python", [
-        textarea('Python Code Edit', rows=10, code={'theme':'dracula','mode': 'python'}, value='import something\n# Write your python code', name='code'),
-        actions(buttons=options_code, name='actions_code'),
-        actions('Helpful Code', buttons=options_help, name='actions_help')
-    ])
-    put_markdown("Your code:\n '''python\n%s\n'''" % code)
-    #put_buttons(['Download content'], lambda _: download('saved.py', pin.code.encode('utf8')), small=True)
+        put_markdown("""# Python Playground
+        ## Write your own implementation of our functions
+        """, lstrip=True)
+
+        options_code = [{"label":'Run Code',"value":'submit',"type":'submit'},
+                        {"label":'Reset',"value":'cancel',"type":'cancel'},
+                        {"label":'Run Code',"value":'submit',"type":'submit'}]
+        options_help =['Import basic line graph', 'Import basic bar chart', 'Import basic year data']
+
+        inputs = put_input([
+            textarea('Python Code Edit', rows=10, code={'theme':'dracula','mode': 'python'}, value='import something\n# Write your python code', name='code'),
+            actions(buttons=options_code, name='actions_code'),
+            actions('Helpful Code', buttons=options_help, name='actions_help'),
+            put_buttons(dict(value=['Continue'], color='succcess'), onclick=set_contin())
+        ])
+        put_markdown("Your code:\n '''python\n%s\n'''" % code)
+        put_buttons(['Download content'], lambda _: download('saved.py', pin.code.encode('utf8')), small=True)
 
 def set_panda_format():
     pd.set_option('display.max_rows', None)

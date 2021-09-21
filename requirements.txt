@@ -10,3 +10,4 @@ requests
 matplotlib
 scipy
 seaborn
+asyncio
