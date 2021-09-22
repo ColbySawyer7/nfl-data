@@ -6,7 +6,7 @@ from pywebio.platform.tornado_http import start_server
 import argparse
 import asyncio
 
-from backend.struc import show_main_menu, show_python_editor
+from backend.struc import show_main_menu
 
 def app():
     set_env(title="NFL-data")
@@ -15,7 +15,7 @@ def app():
     """)
     show_main_menu()
     #show_python_editor()
-    dev_notes()
+    #dev_notes()
 
 def dev_notes():
     # Add Developement Notes (notably the proper nods)

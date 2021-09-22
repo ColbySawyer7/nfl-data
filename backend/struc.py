@@ -1,3 +1,4 @@
+from numpy.lib.function_base import select
 from pywebio.session import set_env, download
 from pywebio.input import *
 from pywebio.output import *
@@ -18,17 +19,74 @@ import numpy as np
 from scipy import stats
 import seaborn as sns
 
+data = None
+
 def show_main_menu():
     #TODO First set of quickly available charts
     #       Positional Comparisons, Raw Stats Presentations, PPR stats, Charts to go along with those
     #       QB Heat Maps
     #       Team Tiers
     #options =  ['Single Player Stats','Player Comparison', 'Team Tier Chart']
-    data = get_year_data(2021)
-    options =  ['Single Player Stats']
-    put_input('menu',input_group(inputs=[actions('Common_Tools', options)]))
-    if pin.menu == options[0]:
-        show_single_player_stats(data)
+    selected_year = select('Year', YEARS)
+    data = get_year_data(selected_year)
+
+#Common Tools code
+    options =  ['Single Player Stats', 'Show Player Comparison Menu', 'Show Team Tier Chart (Current)', 'Show Player PPR/Week']
+    tool_buttons = [dict(label=key, value=key, color='success') for key in options]
+    tool_functions = [value for value in options]
+
+#Python Editor code
+    options_code = [{"label":'Run Code',"value":'submit',"type":'submit'},
+                    {"label":'Reset',"value":'cancel',"type":'cancel'},
+                    {"label":'Run Code',"value":'submit',"type":'submit'}]
+    options_help =['Import basic line graph', 'Import basic bar chart', 'Import basic year data']
+    help_options= ['Simple Bar Chart', 'Simple Line Chart', 'Fetch player image']
+
+    tpl = '''
+    <details {{#open}}open{{/open}}>
+        <summary>{{title}}</summary>
+        {{#contents}}
+            {{& pywebio_output_parse}}
+        {{/contents}}
+    </details>
+    '''
+## Data Download
+    put_widget(tpl, {
+        "open": False,
+        "title":  'Data available for ' + str(selected_year),
+        "contents": [
+            put_markdown(""" ### Downloads:"""),
+            put_buttons(['Download as Markdown file'], lambda _: download('saved.md', pin.md_text.encode('utf8')), small=True)
+        ]
+    })
+
+## Common Tools
+    put_markdown(""" ## Tools""")
+    put_markdown('Here are some common tools used, feel free to continue to create your own')
+    put_buttons(buttons=tool_buttons, onclick=lambda _: tool_functions)
+
+## Python Editor
+#    put_markdown("""## Python Editor
+#        Write your own implementation of our functions
+#        """, lstrip=True)
+#    put_textarea('md_text', rows=10, code={'theme':'dracula','mode': 'python'}, value='import nfl_data_py as nfl\n# Write your python code')
+#    #put_markdown("Your code:\n '''python\n%s\n'''" % code)
+#    put_buttons(['Export code'], lambda _: download('saved.md', pin.code.encode('utf8')), small=True)
+#    put_markdown(""" ### Importing Tools """)
+
+
+## Developer Notes
+    put_markdown("""## Developer Notes
+        ### Recognition
+        Special thanks to [cooperdff](https://github.com/cooperdff) for the great python library, as well as [Ben Baldwin](https://twitter.com/benbbaldwin), 
+        [Sebastian Carl](https://twitter.com/mrcaseb), and [Lee Sharpe](https://twitter.com/LeeSharpeNFL) for making this data freely available and easy to access.
+        ### Contrib
+        Code is available Open-Source (GPLv3) [here](https://github.com/ColbySawyer7/nfl-data), please open issues for discussion prior to changes
+        ### Contact
+        For more information or any general inquiry feel free to [Reach out](http://colby-sawyer.com)
+    """, lstrip=True)
+    put_html('<img src="https://media.giphy.com/media/xUPOqo6E1XvWXwlCyQ/giphy.gif" alt="Thats all folks"  width="250" />')
+
 
 def show_team_tier_chart():
     data = get_pbp_data([2021])
@@ -88,64 +146,47 @@ def show_team_tier_chart():
 
     return get_all_team_data()
 
-def show_player_comparison_menu(data, years=YEARS):
-    players = data['player_name'].tolist()
-    title = 'Player Stats: '
-    popup(title,[
+def show_player_comparison_menu(data=data, years=YEARS):
+    if data != None:
+        players = data['player_name'].tolist()
+        title = 'Player Stats: '
+        popup(title,[
             put_text('Hello')
         ], size='large')
     return
 
-def show_single_player_stats(data):
-    players = data['player_name'].tolist()
-    player_name = select('Player', players)
-    available_weeks = list(set(data['week'].tolist()))
-    available_weeks.insert(0,'Total')
-    week = select('Week', available_weeks)
-    title = 'Player Stats: ' + player_name
-    if week == 'Total':
-        week = None
-    popup(title,[
-            put_markdown(get_player_data(data,player_name, week, removeZeros=True).transpose().to_markdown())
-        ], size='large')
-    return
+def show_single_player_stats(data=data):
+    if data != None:
+        players = data['player_name'].tolist()
+        player_name = select('Player', players)
+        available_weeks = list(set(data['week'].tolist()))
+        available_weeks.insert(0,'Total')
+        week = select('Week', available_weeks)
+        title = 'Player Stats: ' + player_name
+        if week == 'Total':
+            week = None
+        popup(title,[
+                put_markdown(get_player_data(data,player_name, week, removeZeros=True).transpose().to_markdown())
+            ], size='large')
+        return
 
-def show_ppr_by_week(data):
-    players = data['player_name'].tolist()
-    player_name = select('Player', players)
-    available_weeks.insert(0,'Total')
-    week = select('Week', available_weeks)
-    title = player_name + 'PPR Output'
-    popup(title,[
-            put_markdown(get_player_data(data,player_name, week, removeZeros=True).transpose().to_markdown())
-        ], size='large')
+def show_ppr_by_week(data=data):
+    if data != None:
+        players = data['player_name'].tolist()
+        player_name = select('Player', players)
+        available_weeks.insert(0,'Total')
+        week = select('Week', available_weeks)
+        title = player_name + 'PPR Output'
+        popup(title,[
+                put_markdown(get_player_data(data,player_name, week, removeZeros=True).transpose().to_markdown())
+            ], size='large')
     return 
 
-def show_player_charts_menu(data):
-    title = 'Common Player Charts'
-    options = ['PPR/Week Line']
-    
+def show_player_charts_menu(data=data):
+    if data != None:
+        title = 'Common Player Charts'
+        options = ['PPR/Week Line']
     return 
-
-def show_python_editor():
-    # Python Editor Default
-        put_markdown("""# Python Playground
-        ## Write your own implementation of our functions
-        """, lstrip=True)
-
-        options_code = [{"label":'Run Code',"value":'submit',"type":'submit'},
-                        {"label":'Reset',"value":'cancel',"type":'cancel'},
-                        {"label":'Run Code',"value":'submit',"type":'submit'}]
-        options_help =['Import basic line graph', 'Import basic bar chart', 'Import basic year data']
-
-        inputs = put_input([
-            textarea('Python Code Edit', rows=10, code={'theme':'dracula','mode': 'python'}, value='import something\n# Write your python code', name='code'),
-            actions(buttons=options_code, name='actions_code'),
-            actions('Helpful Code', buttons=options_help, name='actions_help'),
-            put_buttons(dict(value=['Continue'], color='succcess'), onclick=set_contin())
-        ])
-        put_markdown("Your code:\n '''python\n%s\n'''" % code)
-        put_buttons(['Download content'], lambda _: download('saved.py', pin.code.encode('utf8')), small=True)
 
 def set_panda_format():
     pd.set_option('display.max_rows', None)
