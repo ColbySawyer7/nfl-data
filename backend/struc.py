@@ -10,7 +10,7 @@ from io import BytesIO
 import pandas as pd
 import argparse
 
-from backend.constant import YEARS 
+from backend.constant import YEARS, COLLAPSE_WIDGET
 from backend.data import get_all_team_data, get_pbp_data, get_year_data, get_all_data, get_player_data
 
 from matplotlib import pyplot as plt
@@ -42,16 +42,8 @@ def show_main_menu():
     options_help =['Import basic line graph', 'Import basic bar chart', 'Import basic year data']
     help_options= ['Simple Bar Chart', 'Simple Line Chart', 'Fetch player image']
 
-    tpl = '''
-    <details {{#open}}open{{/open}}>
-        <summary>{{title}}</summary>
-        {{#contents}}
-            {{& pywebio_output_parse}}
-        {{/contents}}
-    </details>
-    '''
 ## Data Download
-    put_widget(tpl, {
+    put_widget(COLLAPSE_WIDGET, {
         "open": False,
         "title":  'Data available for ' + str(selected_year),
         "contents": [
@@ -76,16 +68,22 @@ def show_main_menu():
 
 
 ## Developer Notes
-    put_markdown("""## Developer Notes
-        ### Recognition
-        Special thanks to [cooperdff](https://github.com/cooperdff) for the great python library, as well as [Ben Baldwin](https://twitter.com/benbbaldwin), 
-        [Sebastian Carl](https://twitter.com/mrcaseb), and [Lee Sharpe](https://twitter.com/LeeSharpeNFL) for making this data freely available and easy to access.
-        ### Contrib
-        Code is available Open-Source (GPLv3) [here](https://github.com/ColbySawyer7/nfl-data), please open issues for discussion prior to changes
-        ### Contact
-        For more information or any general inquiry feel free to [Reach out](http://colby-sawyer.com)
-    """, lstrip=True)
-    put_html('<img src="https://media.giphy.com/media/xUPOqo6E1XvWXwlCyQ/giphy.gif" alt="Thats all folks"  width="250" />')
+    put_widget(COLLAPSE_WIDGET, {
+        "open": False,
+        "title":  'Developer Notes',
+        "contents": [
+            put_markdown("""## Developer Notes
+                ### Recognition
+                Special thanks to [cooperdff](https://github.com/cooperdff) for the great python library, as well as [Ben Baldwin](https://twitter.com/benbbaldwin), 
+                [Sebastian Carl](https://twitter.com/mrcaseb), and [Lee Sharpe](https://twitter.com/LeeSharpeNFL) for making this data freely available and easy to access.
+                ### Contrib
+                Code is available Open-Source (GPLv3) [here](https://github.com/ColbySawyer7/nfl-data), please open issues for discussion prior to changes
+                ### Contact
+                For more information or any general inquiry feel free to [Reach out](http://colby-sawyer.com)
+            """, lstrip=True),
+            put_html('<img src="https://media.giphy.com/media/xUPOqo6E1XvWXwlCyQ/giphy.gif" alt="Thats all folks"  width="250" />')
+        ]
+    })
 
 
 def show_team_tier_chart():
